@@ -1,6 +1,6 @@
-## TEMP ADDON FIX
+## TEMP WOW : FOREVER ADDONS FIX
 
-Addons in World of Warcraft can't save/read their addons variables fixes, so this will fix temporary until blizzard fix it.
+Addons in World of Warcraft : Forever can't save/read their variables, so this will fix temporary until blizzard do it.
 
 
 Open "SavedVariablesBridge.ps1" and add every addon folder you need (see names into /Interface/AddOns)
