@@ -1,21 +1,57 @@
-## TEMP WOW : FOREVER ADDONS FIX
+# WoW: Forever temporary addon fix
 
-Addons in World of Warcraft : Forever can't save/read their variables, so this will fix temporary until blizzard do it.
+**The beta client writes addon settings on exit, but never reads them back.** Every addon starts from scratch at each login: Leatrix Plus options unchecked, Auctionator config empty, and so on. Your settings are not lost, they sit unused in `WTF\Account\<account>\SavedVariables`.
 
-1. Put these file into your WoW : Forever root folder
+This is a Blizzard bug in the beta build (client 1.60.1, interface 16001). This script is a stopgap until it is fixed.
 
-<img width="626" height="262" alt="image" src="https://github.com/user-attachments/assets/8538185a-04fe-47ac-adb4-187987a87c87" />
+## How it works
 
+`SavedVariablesBridge.ps1` generates a small addon of its own, `Interface\AddOns\!SavedVariablesBridge`, which contains a copy of each SavedVariables file. The game happily runs those copies as addon code, so the variables exist before any other addon starts. The `!` in the name makes it load first.
 
+A file watcher re-syncs the copies as soon as the game writes, so a `/reload` or a logout is picked up immediately.
 
-2. Open "SavedVariablesBridge.ps1" and add every addons you need (see into /Interface/AddOns)
+**It never touches your addons' own files.** An earlier approach added a line to each addon's `.toc`; addon updates rewrite that file and silently removed it. Nothing here breaks on update.
 
-<img width="383" height="109" alt="image" src="https://github.com/user-attachments/assets/0abe73f2-11e1-44bb-bc5d-cdd0746c53d5" />
+## Install
 
+1. Drop `SavedVariablesBridge.ps1` and `RunBridge.cmd` in your **WoW: Forever folder**, the one that contains `WTF` and `Interface` (usually `World of Warcraft\_classic_beta_`).
+2. Run `RunBridge.cmd` **before launching the game**, and leave the window open while you play.
+3. Launch the game. Your settings are back.
 
-3. Save and run "RunBridge.cmd"
-4. Run World of Warcraft : Forever
+First run only: if your settings were already wiped, set them once, `/reload`, and they stick from then on.
 
+## Addon detection is automatic
 
+WoW names each SavedVariables file after the addon folder, so the script keeps every file that matches a folder in `Interface\AddOns`. Install a new addon and it is covered, with nothing to edit.
 
-## REMEMBER TO RUN "RunBridge.cmd" BEFORE LAUNCH WORLD OF WARCRAFT : FOREVER AND LET IT RUNNING WHILE PLAYING.
+Per-character files are copied too, each wrapped in a guard so one character's settings never leak onto another:
+
+```lua
+if UnitName("player") == "Yourname" then
+  -- your character's saved variables
+end
+```
+
+The console log shows every file taken, every file ignored and why, and each sync triggered by the game:
+
+```
+15:45:00   compte  Leatrix_Plus.lua -> SV_Leatrix_Plus.lua (6183 caracteres, ecrit 15:44:58)
+15:45:00   ignore  AUCTIONATOR_CONFIG.lua (aucun addon de ce nom)
+15:45:00 pont pret : 17 fichiers charges au prochain demarrage
+```
+
+## Good to know
+
+- **The window must stay open.** If it is closed, settings simply stop being refreshed; nothing is lost, the last sync stays in place.
+- **A brand new addon is picked up after its first save**, so after one `/reload` or logout.
+- **Only files matching an installed addon are copied.** Leftovers from other tools, such as `AUCTIONATOR_CONFIG.lua` or `LeaPlusDB.lua` sitting next to `Auctionator.lua`, are frozen duplicates: loading them would overwrite fresh settings, so they are skipped on purpose.
+- **Blizzard's own files** (`Blizzard_*.lua`) are left alone.
+- The per-character guard matches the character's first name.
+
+## Uninstall
+
+Close the window and delete `Interface\AddOns\!SavedVariablesBridge`. Nothing else was modified.
+
+## Credits
+
+Same bug independently documented by [forever-addon-kit](https://github.com/Thunderz96/forever-addon-kit).
