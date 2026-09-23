@@ -55,3 +55,7 @@ Close the window and delete `Interface\AddOns\!SavedVariablesBridge`. Nothing el
 ## Credits
 
 Same bug independently documented by [forever-addon-kit](https://github.com/Thunderz96/forever-addon-kit).
+
+## Support
+
+If this saved you an evening of re-ticking boxes: [buy me a coffee](https://buymeacoffee.com/zkyxykz).
