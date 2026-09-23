@@ -1,5 +1,7 @@
 # WoW: Forever temporary addon fix
 
+<a href="https://www.buymeacoffee.com/zkyxykz"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=zkyxykz&button_colour=FFDD00&font_colour=000000&font_family=Poppins&outline_colour=000000&coffee_colour=ffffff" /></a>
+
 **The beta client writes addon settings on exit, but never reads them back.** Every addon starts from scratch at each login: Leatrix Plus options unchecked, Auctionator config empty, and so on. Your settings are not lost, they sit unused in `WTF\Account\<account>\SavedVariables`.
 
 This is a Blizzard bug in the beta build (client 1.60.1, interface 16001). This script is a stopgap until it is fixed.
@@ -55,7 +57,3 @@ Close the window and delete `Interface\AddOns\!SavedVariablesBridge`. Nothing el
 ## Credits
 
 Same bug independently documented by [forever-addon-kit](https://github.com/Thunderz96/forever-addon-kit).
-
-## Support
-
-If this saved you an evening of re-ticking boxes: [buy me a coffee](https://buymeacoffee.com/zkyxykz).
